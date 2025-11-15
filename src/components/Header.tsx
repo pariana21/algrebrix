@@ -21,7 +21,7 @@ function Header() {
           <img
             src="/logo.png"
             alt="Algebrix.ai Logo"
-            className="h-12 w-auto object-contain"
+            className="h-12 w-auto object-contain rounded-lg"
           />
         </a>
       </div>

@@ -1,15 +1,7 @@
 function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 bg-black/90 backdrop-blur-md border-b border-gray-800 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href="/" className="flex items-center">
-          <img
-            src="/Untitled design.png"
-            alt="Algebrix.ai Logo"
-            className="h-16 w-16 object-cover rounded-lg"
-          />
-        </a>
-
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <nav className="flex items-center gap-6">
           <a
             href="/"
@@ -24,6 +16,14 @@ function Header() {
             Lab
           </a>
         </nav>
+
+        <a href="/" className="flex items-center">
+          <img
+            src="/logo.png"
+            alt="Algebrix.ai Logo"
+            className="h-12 w-auto object-contain"
+          />
+        </a>
       </div>
     </header>
   );

@@ -141,12 +141,25 @@ function ChatWidget() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto h-[calc(100vh-12rem)] flex flex-col p-4">
-      <div className="flex-1 overflow-y-auto mb-4 space-y-4 bg-white rounded-lg shadow-lg p-6">
+    <div className="max-w-6xl mx-auto h-[calc(100vh-12rem)] flex flex-col p-4">
+      <div className="mb-4 bg-gradient-to-r from-gray-900 to-black border border-gray-700 rounded-lg px-6 py-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-white font-bold text-lg">Research Lab</h2>
+            <p className="text-gray-400 text-xs">AI-Powered Analysis Workspace</p>
+          </div>
+          <div className="flex gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+            <span className="text-xs text-gray-400">System Active</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex-1 overflow-y-auto mb-4 space-y-4 bg-gradient-to-br from-gray-900 to-black rounded-lg shadow-2xl p-6 border border-gray-800">
         {messages.length === 0 && (
-          <div className="text-center text-slate-500 py-20">
-            <p className="text-lg mb-2">Welcome to Algebrix!</p>
-            <p className="text-sm">Ask me anything or use Search & Summarize to research a topic.</p>
+          <div className="text-center text-gray-400 py-20">
+            <p className="text-lg mb-2 text-white">Welcome to the Research Lab</p>
+            <p className="text-sm">Initialize your research query or activate Search & Summarize protocol.</p>
           </div>
         )}
 
@@ -156,10 +169,10 @@ function ChatWidget() {
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-3xl rounded-lg px-4 py-3 ${
+              className={`max-w-3xl rounded-lg px-4 py-3 border ${
                 message.role === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 text-slate-900'
+                  ? 'bg-white text-black border-gray-300'
+                  : 'bg-gray-800 text-white border-gray-700'
               }`}
             >
               <MathSteps content={message.content} />
@@ -179,7 +192,7 @@ function ChatWidget() {
         ))}
 
         {loading && agentStatus && (
-          <div className="flex items-center gap-2 text-blue-600">
+          <div className="flex items-center gap-2 text-white">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span className="text-sm font-medium">{agentStatus}</span>
           </div>
@@ -188,12 +201,12 @@ function ChatWidget() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="bg-white rounded-lg shadow-lg p-4">
+      <div className="bg-gradient-to-br from-gray-900 to-black rounded-lg shadow-2xl p-4 border border-gray-800">
         <div className="flex gap-2 mb-2">
           <button
             onClick={handleAgentSearch}
             disabled={loading || !input.trim()}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
           >
             <Search className="w-4 h-4" />
             Search & Summarize
@@ -205,15 +218,15 @@ function ChatWidget() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Ask me anything or enter a topic to research..."
-            className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            placeholder="Enter research query or analysis request..."
+            className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-600 resize-none"
             rows={2}
             disabled={loading}
           />
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            className="px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
           >
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />

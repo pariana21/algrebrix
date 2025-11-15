@@ -8,10 +8,12 @@ function ChatPage() {
   const [showSafetyModal, setShowSafetyModal] = useState(true);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-black flex flex-col relative overflow-hidden">
+      <div className="smoke-bg absolute inset-0 opacity-20"></div>
+      <div className="grid-bg absolute inset-0 opacity-10"></div>
       <Header />
 
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-20 relative z-10">
         <ChatWidget />
       </main>
 

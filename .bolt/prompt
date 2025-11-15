@@ -1,0 +1,90 @@
+For all designs I ask you to make, have them be beautiful, not cookie cutter. Make webpages that are fully featured and worthy for production.
+
+By default, this template supports JSX syntax with Tailwind CSS classes, React hooks, and Lucide React for icons. Do not install other packages for UI themes, icons, etc unless absolutely necessary or I request them.
+
+Use icons from lucide-react for logos.
+
+You are an AI full-stack web developer and DevOps engineer. Build a complete, deployable website project named **Algebrix.ai Beta**. Use the attached icon file named `algebrix-icon.png` as the site logo and favicon (if the file is not present, create a small placeholder icon and add a TODO comment to replace it with the provided icon). Deliver production-ready code and a README with Replit deployment instructions.
+
+PROJECT GOALS
+1. A modern responsive **Landing page** (marketing header, tagline, features, CTA).
+2. A **Chat page / widget** where users chat with the Algebrix agent.
+3. An **Agent task** endpoint and UI flow that:
+   - Accepts a "topic".
+   - Uses the Gemini free API (env var: `GEMINI_API_KEY_FREE`) to search the web.
+   - Opens the top 5 results using Playwright (server-side), extracts each page `title` and the first meaningful paragraph (excerpt).
+   - Saves results to a CSV with columns `{url,title,excerpt}` and returns a downloadable link.
+   - Returns a concise summary (3–5 sentences) and the CSV link to the chat UI.
+4. Math & step-by-step reasoning: the chat must be able to solve math/logic queries and present step-by-step solutions.
+5. Safety rules: the agent will **never** request or use real account credentials, will **not** submit login forms or perform purchases, and will warn the user before interacting with pages requiring authentication.
+6. Deployable to **Replit**. Include explicit steps to enable Playwright on Replit (install & run `playwright install`).
+
+TECH STACK / FILES TO GENERATE
+- Framework: **Next.js (React)** or a single-repo Node.js app served with Express if Bolt prefers. Use **Tailwind CSS** for styling (responsive, modern).
+- Backend: Node/Express API routes (under `/api`) for:
+  - `/api/chat` — conversational proxy to Gemini for chat and math answers.
+  - `/api/agent` — runs the agent workflow: uses Gemini search, then Playwright for page extraction, writes CSV to `/public/outputs/{timestamp}-results.csv`, returns `summary`, `results` JSON and `csvUrl`.
+  - `/api/download?file=` — safe file serve (or simply use public folder).
+- Playwright integration: backend uses Playwright (Chromium) headless to open pages and extract title + first paragraph. Include robust extraction fallback: if no <p> found, extract first 200-300 chars of visible text.
+- CSV generation: use `csv-writer` or `papaparse` server-side to create a downloadable CSV.
+- Frontend:
+  - `pages/index` — Landing page with hero, features, CTA, and the attached icon used in header.
+  - `pages/chat` — Chat UI with message list, input box, attachments, and a “Search & Summarize” special action button. Show progress/status when agent runs.
+  - Components: `Header`, `Footer`, `ChatWidget`, `AgentResults` (show table + CSV link), `MathSteps` (render step-by-step math).
+- Assets: `public/algebrix-icon.png` (use attached icon). Favicon metadata included.
+- README.md: full instructions to run locally and to deploy on Replit, list of required env vars:
+  - `GEMINI_API_KEY_FREE` — free Gemini API key.
+  - `PORT` — optional.
+  - `NODE_ENV` — optional.
+- package.json scripts:
+  - `start`, `dev`, `build`, `postinstall` (runs `playwright install`).
+- Unit/Integration: add at least one test script or manual test instructions for the `/api/agent` flow.
+
+AI BEHAVIOR & PROMPTING (backend)
+- When calling the Gemini API for searches, send a system prompt instructing Gemini to return the top 10 search URLs with short relevance scores and short descriptions.
+- For each URL, Playwright should:
+  1. Open page with a short timeout (10s).  
+  2. Wait for `domcontentloaded`.  
+  3. Remove common clutter selectors (cookie banners, overlays) if present.  
+  4. Extract `<title>` and the first visible `<p>` or the first 250 chars of visible text.  
+  5. Return `{ url, title, excerpt }`.
+- After extracting 5 results, compose a concise summary (3–5 sentences) that synthesizes findings and includes a 1-line “confidence” note.
+- For math/chat queries: use the Gemini API with a system prompt that instructs: “Show step-by-step solutions, show intermediate arithmetic (digit-by-digit) for any calculations, and present final answer clearly. Do not reveal internal chain-of-thought; present only clear steps and results.”
+
+UI/UX SPECIFICS
+- Chat widget:
+  - Messages from user and Algebrix with distinct styles.
+  - Agent messages can include:
+    - Inline table of results (url + title + excerpt) and a prominent **Download CSV** button.
+    - A short synth summary.
+  - For “Search & Summarize” actions, show a real-time progress indicator: Searching → Extracting pages → Generating CSV → Done.
+  - Include a safety notice modal that explains agent limits (no logins).
+- Landing page copy: Use the provided German description (Algebrix.ai Beta – Beschreibung) as the “About” text and provide a short English tagline: “Autonomous. Intelligent. Everywhere. Your personal AI research and math assistant.”
+- Use the attached `algebrix-icon.png` in header and as favicon. If icon not found, add `public/algebrix-icon.png` placeholder and add a TODO to replace.
+
+DEPLOYMENT (Replit)
+- README must include:
+  1. How to create a Replit project and import the repo.
+  2. Add environment variable `GEMINI_API_KEY_FREE` in the Replit secrets.
+  3. Run `npm install` then `npx playwright install` (or `playwright install` in postinstall).
+  4. Start the server with `npm run dev` or `npm start`.
+  5. If headless browsers are restricted on Replit, include a fallback server-only path that uses HTTP fetch to get page HTML and extract title/first-paragraph if Playwright cannot run, and instruct the user how to toggle fallback mode via env var `PLAYWRIGHT_ENABLED=false`.
+- Add instructions to ensure Playwright Chromium is installed in Replit environment (use `playwright install --with-deps` if necessary) and how to enable the necessary apt packages if Replit supports them.
+
+DELIVERABLES
+- Full project tree and all source files (complete and runnable).
+- `README.md` with run & deploy instructions including Replit specifics and explanation of API endpoints.
+- A short demo script with sample queries:
+  - “Search for ‘best budget laptops 2025’ and summarize top 5 results.”
+  - “Solve: 3x + 5 = 20. Show step-by-step work.”
+- Add comments and TODOs where the developer must insert the real `GEMINI_API_KEY_FREE` and where to replace the icon if missing.
+
+SAFETY & PRIVACY
+- The site must explicitly state in the footer and in chat UI that Algebrix will never request user account credentials and will not perform any purchase or login actions.
+- Rate limit agent runs to avoid abuse (e.g., max 2 concurrent agent tasks per IP; the backend should enforce this).
+
+FINAL NOTE
+- Provide a complete ZIP-ready project output and a single-page `README.md` that a user can paste into Replit, set the env var, run `npm install` and `npm run dev`, and see a working landing page and chat with basic agent functionality.
+- If any steps fail due to environment constraints (e.g., Playwright not supported), add a clear fallback plan as described above.
+
+Generate the full codebase, README, and sample demo files now.
